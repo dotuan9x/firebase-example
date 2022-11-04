@@ -1,0 +1,59 @@
+{
+    "compilerOptions": {
+        "outDir": "./build",
+        "target": "es6",
+        "lib": [
+            "dom",
+            "dom.iterable",
+            "esnext"
+        ],
+        "sourceMap": false,
+        "allowJs": true,
+        "skipLibCheck": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "strictPropertyInitialization": false,
+        "experimentalDecorators": true,
+        "strict": true,
+        "forceConsistentCasingInFileNames": true,
+        "noFallthroughCasesInSwitch": true,
+        "module": "esnext",
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "isolatedModules": false,
+        "noImplicitAny": false,
+        "noEmit": false,
+        "declaration": false,
+        "jsx": "react",
+        "baseUrl": ".",
+        "paths": {
+            "@Src/*": [
+                "src/*"
+            ],
+            "@Assets/*": [
+                "src/assets/*"
+            ],
+            "@Components/*": [
+                "src/components/*"
+            ],
+            "@Hooks/*": [
+                "src/hooks/*"
+            ],
+            "@Modules/*": [
+                "src/modules/*"
+            ],
+            "@Types/*": [
+                "src/types/*"
+            ],
+            "@Utils/*": [
+                "src/utils/*"
+            ]
+        }
+    },
+    "include": [
+        "src/**/*"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}
