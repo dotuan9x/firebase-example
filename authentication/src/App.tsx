@@ -1,8 +1,10 @@
 // Libraries
 import React, {useEffect} from 'react';
-import {initializeApp} from 'firebase/app';
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-
+import * as firebaseui from 'firebaseui'
+import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+import 'firebaseui/dist/firebaseui.css'
 
 const MyApp = () => {
     const firebaseConfig = {
@@ -16,37 +18,54 @@ const MyApp = () => {
         measurementId: "G-291N1VBG7V"
     };
 
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const provider = new GoogleAuthProvider();
-    provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
+    firebase.initializeApp(firebaseConfig);
 
+    // Configure FirebaseUI.
+    const uiConfig = {
+        // Popup signin flow rather than redirect flow.
+        signInFlow: 'popup',
+        // We will display Google and Facebook as auth providers.
+        signInOptions: [
+            {
+                provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+                // Required to enable ID token credentials for this provider.
+                clientId: '168906573103-g9244j2vthdvgq7379rcj0pdojd67ic6.apps.googleusercontent.com'
+            },
+            firebase.auth.FacebookAuthProvider.PROVIDER_ID
+        ],
+        callbacks: {
+            // Avoid redirects after sign-in.
+            signInSuccessWithAuthResult: () => false,
+        },
+        credentialHelper: firebaseui.auth.CredentialHelper.GOOGLE_YOLO
+    };
+
+    var ui = new firebaseui.auth.AuthUI(firebase.auth());
+
+    // Disable auto-sign in.
+    ui.disableAutoSignIn();
+
+    ui.start('#firebaseui-container', uiConfig);
 
     useEffect(() => {
-        signInWithPopup(auth, provider)
-            .then((result) => {
-                // This gives you a Google Access Token. You can use it to access the Google API.
-                const credential = GoogleAuthProvider.credentialFromResult(result);
-                const token = credential?.accessToken;
-                // The signed-in user info.
-                const user = result.user;
-                // ...
-
-                console.log('credential', credential)
-            }).catch((error) => {
-            // Handle Errors here.
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            // The email of the user's account used.
-            const email = error.customData.email;
-            // The AuthCredential type that was used.
-            const credential = GoogleAuthProvider.credentialFromError(error);
-            // ...
+        // Listener when user changed
+        const unregisterAuthObserver = firebase.auth().onAuthStateChanged(user => {
+            console.log('user', user)
         });
+
+        // Sign out method
+        // firebase.auth().signOut();
+
+        return () => unregisterAuthObserver();
     }, [])
 
-    return <>MyApp</>;
+    return (
+        <>
+            MyApp
+            <div id="firebaseui-container"></div>
+            {/*<StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />*/}
+        </>
+    );
 };
 
 export default MyApp;
